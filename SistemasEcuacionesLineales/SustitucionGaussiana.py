@@ -1,6 +1,6 @@
 import numpy as np
 
-def resolverSistema(M, v=None):
+def sustGauss(M, v=None):
   """Resulve el Sistema de Ecuaciones mediante el 
   método de Gauss y la sustitución hacia atrás. Además, realiza un pivoteo parcial.
   
