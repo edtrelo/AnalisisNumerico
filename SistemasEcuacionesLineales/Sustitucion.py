@@ -1,6 +1,10 @@
 import numpy as np
 from SustitucionGaussiana import crearMatrizAumentada
 
+# ¿Por qué se trabaja con una matriz aumentada en estos algoritmos? Pues en el algoritmo de
+# sustGauss, se trabaja con una matriz aumentada, entonces decidí que estos algoritmos también
+# lo hagan de la misma manera para poder usarlos sin mayor ajuste en tal función.
+
 def sustDelante(L, v = None):
   """Dada una matriz L triangular inferior y v un vector, se resuelve el sistema Lx = v
   por medio de la sustitución hacia delante. El argumento que se espera es la matriz
