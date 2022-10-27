@@ -98,12 +98,3 @@ def sustAtras(U, v = None):
       A[i, n] =  A[i, n] - A[i, j] * X[j]
 
   return X
-
-A = [[  1,   2  , 2],
-    [  0 , -4, -6 ],
-    [  0,   0 , -1]]
-
-b = [3,-6,1]
-X = sustAtras(A, b)
-print(X)
-print(A)

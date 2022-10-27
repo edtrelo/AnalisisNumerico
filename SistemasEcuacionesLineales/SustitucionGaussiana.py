@@ -1,7 +1,8 @@
 import numpy as np
+from Sustitucion import sustAtras
 
-def sustGauss(M, v=None):
-  """Resulve el Sistema de Ecuaciones mediante el 
+def sustGauss(M, b = None):
+  """Resulve el Sistema de Ecuaciones Mx = b mediante el 
   método de Gauss y la sustitución hacia atrás. Además, realiza un pivoteo parcial.
   
   Args:
@@ -12,8 +13,8 @@ def sustGauss(M, v=None):
       
       Si M es una matriz nxn+1, entonces se le considera como la matriz aumentada del sistema.
       
-    v(list or None):
-      si v es None, es porque M es la matriz aumentada. En otro caso, v es el vector independiente.
+    b(list or None):
+      si b es None, es porque M es la matriz aumentada. En otro caso, b es el vector independiente.
       
   Returns:
     X(np.ndarray):
@@ -44,8 +45,8 @@ def sustGauss(M, v=None):
 
   # si v es None, entonces asumimos que A ya es la matriz
   # aumentada.
-  if v is not None:
-    A = crearMatrizAumentada(A, v)
+  if b is not None:
+    A = crearMatrizAumentada(A, b)
 
   for i in range(0, n-1):
     # Recorremos las primeras n-1 columnas, pues queremos
