@@ -26,14 +26,6 @@ def sustGauss(M, v=None):
   A = np.array(M, dtype=np.float64)  #nota: si dejo aqui sin argumento dtype, redondea todo a enteros.
   n, _ = A.shape
 
-  def crearMatrizAumentada(M, v):
-    """Crea una matriz aumentada con el vector no
-    homogéneo."""
-    nonlocal n
-    b = np.array(v, dtype = np.float64)
-    b = b.reshape(n,1)
-    return np.append(M, b, axis=1)
-
   def obtenerPivote(A, i = 0):
     """Obtiene el renglón p para el cual A[p,i] no es cero y además
     es el de mayor valor absoluto en la columna i. La búsqueda se hace
@@ -77,15 +69,14 @@ def sustGauss(M, v=None):
     # cero entonces no tenemos solución.
     raise Exception("No existe Solución Única.")
   # creamos el vector solución
-  X = np.zeros(n)
-  # comenzamos con la sustituación hacia atrás.
-  X[n-1] = A[n-1, n]/A[n-1, n-1]
-  # recorremos desde atrás el resto de variables que nos
-  # hacen falta. 
-  for i in range(n-2, -1, -1): #el segundo argumento es non-inclusive.
-    suma = 0
-    for j in range(i+1, n):
-      suma += A[i,j]*X[j]
-    X[i] =  (A[i, n] - suma)/A[i,i]
+  X = sustAtras(A, b)
 
   return X
+
+def crearMatrizAumentada(M, v):
+    """Crea una matriz aumentada con el vector no
+    homogéneo."""
+    n, _ = M.shape
+    b = np.array(v, dtype = np.float64)
+    b = b.reshape(n,1)
+    return np.append(M, b, axis=1)
