@@ -1,5 +1,4 @@
 import numpy as np
-from SustitucionGaussiana import crearMatrizAumentada
 
 # ¿Por qué se trabaja con una matriz aumentada en estos algoritmos? Pues en el algoritmo de
 # sustGauss, se trabaja con una matriz aumentada, entonces decidí que estos algoritmos también
@@ -26,12 +25,6 @@ def sustDelante(L, v = None):
       
   Raises:
     Genera una excepción si en la diagonal de L hay un cero, i.e., L es singular."""
-
-  # copiamos la matriz. No vamos a modificarla.
-  A = np.copy(L)
-
-  if v is not None:
-    A = crearMatrizAumentada(A, v)
 
   n, _ = A.shape
   # creamos el vector solución
@@ -76,12 +69,6 @@ def sustAtras(U, v = None):
   Raises:
     Genera una excepción si en la diagonal de U hay un cero, i.e., U es singular."""
 
-  # copiamos la matriz. No vamos a modificarla.
-  A = np.copy(U)
-
-  if v is not None:
-    A = crearMatrizAumentada(A, v)
-
   n, _ = A.shape
   # creamos el vector solución
   X = np.zeros(n)
@@ -99,6 +86,6 @@ def sustAtras(U, v = None):
     X[j] = A[j, n] / A[j, j]
     for i in range(0, j):
       # actualizamos los valores de b, sabiendo ya el valor de xj en la ecuación.
-      A[i, n] =  A[i, n] - A[i, j] * X[j]
+      b[i] =  b[i] - A[i, j] * X[j]
 
   return X

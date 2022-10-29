@@ -1,4 +1,5 @@
 import numpy as np
+from AnalisisNumerico.SistemasEcuacionesLineales.MatricesCuadradas import MatrizCuadrada
 from Sustitucion import sustAtras
 
 def sustGauss(M, b = None):
@@ -81,3 +82,11 @@ def crearMatrizAumentada(M, v):
     b = np.array(v, dtype = np.float64)
     b = b.reshape(n,1)
     return np.append(M, b, axis=1)
+
+A = [[2,4,3,5],
+        [-4,-7,-5,-8],
+        [6,8,2,9],
+        [4,9,-2,14]]
+
+
+
