@@ -3,6 +3,7 @@ from Factorizacion import *
 from Pivoteo import *
 from SistemaLineal import *
 from SolLU import *
+from Normas import *
 
 class MatrizCuadrada:
     """
@@ -199,12 +200,14 @@ class MatrizCuadrada:
         return max(sumas)
 
     @staticmethod
-    def normaUnoVect(self):
-        pass
+    def normaUnoVect(v):
+        """Calcula la norma 1 del vector v."""
+        normaP(v, p = 1)
 
     @staticmethod
-    def normaInfVect(self):
-        pass
+    def normaInfVect(v):
+        """Calcula la norma inf del vector v."""
+        normaInf(v)
 
     def _estimarNormaInv(self):
         """Estimación de la norma inversa."""
@@ -272,5 +275,6 @@ if __name__ == "__main__":
     print(L)
     print('A', P*L*U)
 
-
+    v = np.array([1,2,3])
+    print(MatrizCuadrada.normaInfVect(v))
 
