@@ -41,12 +41,12 @@ def resolverConLUParcial(A, b):
     # obtenemos L=PL' tal que L es triangular inferior.
     Ltrin = np.dot(P, L)
     # permutamos b
-    # Ax=b > L'U x = b -> PL'U x = Pb -> PL' y = Pb 
+    # Ax=b > L'U x = b -> PL'U x = Pb -> PL' y = Pb.
     bper = np.dot(P, b)
-    # Resolvemos Ly=Pb
+    # Resolvemos Ly=Pb con sustitución hacia adelante.
     Y = sustDelante(Ltrin, bper)
+    # Resolvemos Ux = y con sustituación hacia atrás
     X = sustAtras(U, Y)
-    
     return X
 
 def resolverConLUTotal():

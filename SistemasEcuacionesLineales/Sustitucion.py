@@ -1,18 +1,18 @@
+# ALGORITMOS DE SUSTITUCIÓN
+# Sustitución hacia atrás y hacia adelante
+# para matrices triangulares
+
 import numpy as np
 
-# ¿Por qué se trabaja con una matriz aumentada en estos algoritmos? Pues en el algoritmo de
-# sustGauss, se trabaja con una matriz aumentada, entonces decidí que estos algoritmos también
-# lo hagan de la misma manera para poder usarlos sin mayor ajuste en tal función.
-
 def sustDelante(A, v):
-  """Dada una matriz L triangular inferior y b un vector, se resuelve el sistema Lx = b
+  """Dada una matriz A triangular inferior y v un vector, se resuelve el sistema Ax = v
   por medio de la sustitución hacia delante.
   
   Args:
-    L(np.ndarray):
+    A(np.ndarray):
       Matriz triangular inferior.
 
-    b(np.ndarray):
+    v(np.ndarray):
       vector.
 
   Returns:
@@ -20,7 +20,7 @@ def sustDelante(A, v):
       vector solución del sistema de ecuaciones.
       
   Raises:
-    Genera una excepción si en la diagonal de L hay un cero, i.e., L es singular."""
+    Genera una excepción si en la diagonal de A hay un cero, i.e., A es singular."""
 
   L, b = np.copy(A), np.copy(v)
   n, _ = L.shape
@@ -41,14 +41,14 @@ def sustDelante(A, v):
   return X
 
 def sustAtras(A, v):
-  """Dada una matriz U triangular superior y b un vector, se resuelve el sistema Ux = b
+  """Dada una matriz A triangular superior y v un vector, se resuelve el sistema Ax = v
   por medio de la sustitución hacia delante.
   
   Args:
-    U(np.ndarray):
+    A(np.ndarray):
       Matriz triangular superior.
 
-    b(np.ndarray):
+    v(np.ndarray):
       vector
     
   Returns:
@@ -56,7 +56,7 @@ def sustAtras(A, v):
       vector solución del sistema de ecuaciones.
       
   Raises:
-    Genera una excepción si en la diagonal de U hay un cero, i.e., U es singular."""
+    Genera una excepción si en la diagonal de A hay un cero, i.e., A es singular."""
 
   U, b = np.copy(A), np.copy(v)
   n, _ = U.shape
@@ -67,7 +67,6 @@ def sustAtras(A, v):
 
     # si la matriz tiene una entrada cero en la diagonal, 
     # entonces no es invertible y el sistema no tiene solución única.
-    # hay que notar que b[k] = A[k, n], donde b es el vector independiente.
     if U[j, j] == 0:
       raise Exception("La matriz es singular. El sistema no tiene solución")
     # efectuamos la división
