@@ -1,7 +1,8 @@
 import numpy as np
 from Factorizacion import *
+from Pivoteo import *
 
-class MatrizCuadrada:
+class MatrizCuadrada():
     """
     
     Properties:
@@ -26,6 +27,21 @@ class MatrizCuadrada:
         if esCuad:
             self.n = n
 
+    def __str__(self):
+        return self.A.__str__()
+    
+    def __mul__(self, other):
+        return MatrizCuadrada(np.dot(self.A, other.A))
+
+    def __rmul__(self, other):
+        return MatrizCuadrada(np.dot(other.A, self.A))
+
+    def __getitem__(self, index):
+        return self.A[index]
+    
+    def __setitem__(self, index, value):
+        self.A[index] = value
+
     def _verificarCuad(self):
         """Verifica si un numpy.ndarray es una matriz cuadrada."""
         n, m = self.A.shape
@@ -40,29 +56,12 @@ class MatrizCuadrada:
     def obtenerPivoteParcial(self, j, i = None):
         """Obtiene la fila p tal que A[p,j] es el elemento mayor en valor absoluto de la columna j.
         La búsqueda se hace a partir de la diagonal principal por default."""
-        if i is None:
-            i = j + 1
-        
-        mayor = max(self.A[i:, j], key = abs)
-        p = list(self.A[i:, j]).index(mayor) + i
-
-        return p
+        return pivoteoParcial(self.A, j, i)
 
     def obtenerPivoteTotal(self, j):
         """Obtiene la fila p y la columna q tal que A'[p,q] es el elemento mayor en valor absoluto de la
         submatriz A' que se obtiene al considerar solo las filas y columnas j:n-1."""
-
-        pivotes = np.zeros(self.n - j, dtype = np.int)
-        # obtenemos los elementos más grandes de cada columna
-        for k in range(j, self.n):
-            p = self.obtenerPivoteParcial(k, j)
-            pivotes[k-j] = p
-
-        mayores = [self.A[p, j + i] for i, p in enumerate(pivotes)]
-        mayor = max(mayores, key = abs)
-        q = mayores.index(mayor) + j
-
-        return pivotes[q - j], q
+        pivoteoTotal(self.A, j)
 
     def subMatriz(self, i, j):
         """Crea un objeto MatrizCuadrada con la sub matriz obtenida al eliminar
@@ -122,8 +121,9 @@ class MatrizCuadrada:
     def _estimarNormaInv(self):
         c = np.choice([-1, 1], size = self.n)
         
-
-
+    def factLUpivpar(self):
+        L, U, P = factLUpivpar(self.A)
+        return MatrizCuadrada(L), MatrizCuadrada(U), MatrizCuadrada(P)
 
     def _normaInv(self):
         pass
@@ -141,23 +141,20 @@ class MatrizCuadrada:
             return MatrizCuadrada(L), MatrizCuadrada(U)
 
 
-A = [   [2,4,3,12],
-        [-40,-7,-5,-8],
+
+if __name__ == "__main__":
+
+    A = [[2,4,3,5],
+        [-4,-7,-5,-8],
         [6,8,2,9],
         [4,9,-2,14]]
 
-A = np.array(A)
-
-Q = MatrizCuadrada(A)
-
-for i in range(3):
-    print(Q.obtenerPivoteTotal(i))
-
-print(Q.determinante)
-print(np.linalg.det(A))
-print(np.linalg.norm(A, ord = 1))
-print(Q.normaInf)
-
+    A = MatrizCuadrada(A)
+    
+    L, U, P = A.factLUpivpar()
+    print(U)
+    print(L)
+    print('A', L*U)
 
 
 

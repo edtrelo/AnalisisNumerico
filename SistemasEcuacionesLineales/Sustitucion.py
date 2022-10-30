@@ -4,20 +4,16 @@ import numpy as np
 # sustGauss, se trabaja con una matriz aumentada, entonces decidí que estos algoritmos también
 # lo hagan de la misma manera para poder usarlos sin mayor ajuste en tal función.
 
-def sustDelante(L, v = None):
-  """Dada una matriz L triangular inferior y v un vector, se resuelve el sistema Lx = v
-  por medio de la sustitución hacia delante. El argumento que se espera es la matriz
-  aumentada L = L|v de nx(n+1).
-
-  Si v no es None, entonces se crea una matriz aumentada.
+def sustDelante(L, b):
+  """Dada una matriz L triangular inferior y b un vector, se resuelve el sistema Lx = b
+  por medio de la sustitución hacia delante.
   
   Args:
     L(np.ndarray):
-      Matriz triangular inferior aumentada con v.
+      Matriz triangular inferior.
 
-    v(np.ndarray o None)_
-      si v es None, la matriz L se considera aumentada. De otra manera,
-      se crea la matriz aumentada L|v agregando a v como última columna.
+    b(np.ndarray):
+      vector.
 
   Returns:
     X(np.ndarray):
@@ -26,7 +22,7 @@ def sustDelante(L, v = None):
   Raises:
     Genera una excepción si en la diagonal de L hay un cero, i.e., L es singular."""
 
-  n, _ = A.shape
+  n, _ = L.shape
   # creamos el vector solución
   X = np.zeros(n)
 
@@ -35,32 +31,26 @@ def sustDelante(L, v = None):
   for j in range(n):
     # si la matriz tiene una entrada cero en la diagonal, 
     # entonces no es invertible y el sistema no tiene solución única.
-    if A[j, j] == 0:
+    if L[j, j] == 0:
       raise Exception("La matriz es singular. El sistema no tiene solución")
     # efectuamos la división
-    X[j] = A[j, n] / A[j, j]
+    X[j] = b[j] / L[j, j]
     for i in range(j+1, n):
       # actualizamos los valores de b, sabiendo ya el valor de xj en la ecuación.
-      A[i, n] = A[i, n] - A[i, j] * X[j]
+      b[i] = b[i] - L[i, j] * X[j]
 
   return X
 
-
-def sustAtras(U, v = None):
-  """Dada una matriz U triangular superior y v un vector, se resuelve el sistema Ux = v
-  por medio de la sustitución hacia delante. El argumento que se espera es la matriz
-  aumentada U = U|v de nx(n+1).
-
-  Si v no es None, entonces se crea una matriz aumentada.
+def sustAtras(U, b):
+  """Dada una matriz U triangular superior y b un vector, se resuelve el sistema Ux = b
+  por medio de la sustitución hacia delante.
   
   Args:
-    Uv(np.ndarray):
-      Matriz triangular superior aumentada con v.
+    U(np.ndarray):
+      Matriz triangular superior.
 
-    v(np.ndarray o None)_
-      si v es None, la matriz U se considera aumentada. De otra manera,
-      se crea la matriz aumentada U|v agregando a v como última columna.
-
+    b(np.ndarray):
+      vector
     
   Returns:
     X(np.ndarray):
@@ -69,7 +59,7 @@ def sustAtras(U, v = None):
   Raises:
     Genera una excepción si en la diagonal de U hay un cero, i.e., U es singular."""
 
-  n, _ = A.shape
+  n, _ = U.shape
   # creamos el vector solución
   X = np.zeros(n)
 
@@ -80,12 +70,12 @@ def sustAtras(U, v = None):
     # entonces no es invertible y el sistema no tiene solución única.
 
     # hay que notar que b[k] = A[k, n], donde b es el vector independiente.
-    if A[j, j] == 0:
+    if U[j, j] == 0:
       raise Exception("La matriz es singular. El sistema no tiene solución")
     # efectuamos la división
-    X[j] = A[j, n] / A[j, j]
+    X[j] = b[j] / U[j, j]
     for i in range(0, j):
       # actualizamos los valores de b, sabiendo ya el valor de xj en la ecuación.
-      b[i] =  b[i] - A[i, j] * X[j]
+      b[i] =  b[i] - U[i, j] * X[j]
 
   return X

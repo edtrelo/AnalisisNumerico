@@ -1,5 +1,4 @@
 import numpy as np
-from AnalisisNumerico.SistemasEcuacionesLineales.MatricesCuadradas import MatrizCuadrada
 from Sustitucion import sustAtras
 
 def sustGauss(M, b = None):

@@ -1,4 +1,5 @@
 import numpy as np
+from Pivoteo import *
 
 def factLU(M):
     """Obtiene la factorización LU (método estándar) de una matriz, donde L es una matriz triangular inferior
@@ -16,7 +17,7 @@ def factLU(M):
     raises:
         Genera una expeción si en algún momento la diagonal tiene un elemento igual a cero."""
 
-    A = np.array(M, dtype = np.float64)
+    A = np.copy(M)
     n, _ = A.shape
     # inicializamos L como I_n
     L = np.identity(n)
@@ -38,9 +39,39 @@ def factLU(M):
     # para este paso, A ya es U. Sabemos que M^-1 es precisamente como cosntruimos L. 
     return L, A
 
-def factLUpivpar():
-    pass
+def factLUpivpar(M):
+    # copiamos la matriz como un array de tipo np.float64
+    A = np.array(M, dtype = np.float64)
+    n, _ = A.shape
 
+    L = np.identity(n)
+    P = np.identity(n)
+
+    for j in range(n-1):
+        PjInv = np.identity(n)
+        MjInv = np.identity(n)
+
+        p = pivoteoParcial(A, j)
+        if p != j:
+            # intercambiamos renglones
+            A[[j, p]] = A[[p, j]]
+            PjInv[[j, p]] = PjInv[[p, j]]
+
+        for i in range(j+1, n):
+            
+            fact = A[i, j] / A[j, j]
+            MjInv[i, j] = fact
+            A[i] = A[i] - fact*A[j]
+
+        if p != j:
+            MjInv[[j, p]] = MjInv[[p, j]]
+        
+        L = np.dot(L, MjInv)
+        P = np.dot(PjInv, P)
+        
+
+    return L, A, P
+    
 def factLUpivtot():
     pass
 
@@ -54,7 +85,9 @@ if __name__ == "__main__":
         [6,8,2,9],
         [4,9,-2,14]]
 
-    L, U = factLU(A)
+    L, U, P = factLUpivpar(A)
 
     print(L)
     print(U)
+    print(np.dot(L, U))
+
