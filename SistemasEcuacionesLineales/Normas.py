@@ -1,3 +1,5 @@
+import numpy as np
+
 def normaP(v, p = 2):
     """Calcula la norma p del vector v. Por default, se calcula la 
     norma euclidiana.
@@ -13,7 +15,7 @@ def normaP(v, p = 2):
 
 def normaInf(v):
     """Calcula la norma infinito del vector v.
-    
+
     Args:
         v(np.ndarray)"""
     return max(v, key = abs)

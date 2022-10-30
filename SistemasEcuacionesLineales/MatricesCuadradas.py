@@ -1,3 +1,4 @@
+import re
 import numpy as np
 from Factorizacion import *
 from Pivoteo import *
@@ -200,35 +201,52 @@ class MatrizCuadrada:
         return max(sumas)
 
     @staticmethod
-    def normaUnoVect(v):
+    def _normaUnoVect(v):
         """Calcula la norma 1 del vector v."""
-        normaP(v, p = 1)
+        return normaP(v, p = 1)
 
     @staticmethod
-    def normaInfVect(v):
+    def _normaInfVect(v):
         """Calcula la norma inf del vector v."""
-        normaInf(v)
+        return normaInf(v)
 
     def _estimarNormaInv(self):
-        """Estimación de la norma inversa."""
-        c = np.choice([-1, 1], size = self.n)
+        """Estimación de la norma inversa usando la Norma 1 de vectores."""
+        c = np.random.choice([1, -1], size = self.n)
+
         # calculamos la transpuesta de A
         At = MatrizCuadrada(self.A.T)
+        # Resolvemos AtY = c
         Y = resolverConLU(At, c)
+        # Resolvemos AZ = Y
         Z = resolverConLU(self, Y)
 
-    def _normaInv(self):
-        pass
+        normY = MatrizCuadrada._normaUnoVect(Y)
+        normZ = MatrizCuadrada._normaUnoVect(Z)
 
-    def _cond(self, met = None):
-        if met is None:
-            pass
-        elif met == 'exacto':
-            # si la matriz es singular
-            if self.determinante == 0:
+        return normZ / normY
+
+    @property
+    def cond(self, metodo = None):
+        """La condición de la matriz A. Si metodo es None, se regresa una estimación.
+        Si method es 'exacto', se calcula la inversa de A y su norma."""
+        if metodo is None:
+            return self.normaUno * self._estimarNormaInv()
+        elif metodo == 'exacto':
+            try:
+                Ainv = np.linalg.inv(self.A)
+                Ainv = MatrizCuadrada(Ainv)
+                return A.normaUno * Ainv.normaUno
+            except np.LinAlgError:
+                # si la matriz es singular, regresamos infinito como condición.
                 return np.inf
-            else:
-                pass
+        else:
+            raise Exception("El parámetro para 'metodo' no es válido.")
+
+
+    def condExt(self):
+        Ainv = MatrizCuadrada(np.linalg.inv(self.A))
+        return A.normaUno * Ainv.normaUno
         
     def factorizarLU(self, pivoteo = None):
         """
@@ -268,13 +286,8 @@ if __name__ == "__main__":
         [6,8,2,9],
         [4,9,-2,14]]
 
+    print(np.linalg.cond(A, p = 1))
+
     A = MatrizCuadrada(A)
     
-    L, U, P = A.factorizarLU(pivoteo='parcial')
-    print(U)
-    print(L)
-    print('A', P*L*U)
-
-    v = np.array([1,2,3])
-    print(MatrizCuadrada.normaInfVect(v))
-
+    print(A.cond)
