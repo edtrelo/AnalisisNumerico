@@ -2,11 +2,12 @@ import numpy as np
 from Pivoteo import *
 
 def factLU(M):
-    """Obtiene la factorización LU (método estándar) de una matriz, donde L es una matriz triangular inferior
-    y U una matriz tringular superior.
+    """Obtiene la factorización LU (método estándar) de una matriz, donde L 
+    es una matriz triangular inferior y U una matriz tringular superior.
     
-    M(list of lists):
-        M representa una matriz cuadrada.
+    Args:
+        M(np.ndarray):
+            M representa una matriz cuadrada.
         
     returns:
         L(np.ndarray):
@@ -16,10 +17,11 @@ def factLU(M):
             
     raises:
         Genera una expeción si en algún momento la diagonal tiene un elemento igual a cero."""
-
-    A = np.copy(M)
+    # copiamos la matriz del argumento.
+    A = np.array(M, dtype = np.float64)
+    # obtenemos el tamaño de la matriz, que asumimos cuadrada.
     n, _ = A.shape
-    # inicializamos L como I_n
+    # inicializamos L como I_n.
     L = np.identity(n)
     # para cada renglón, los componentes de L debajo de la diagonal principal serán los factores de
     # pivoteo para cada fila. Es decir a_ij / a_ii, para j > i.
@@ -40,36 +42,69 @@ def factLU(M):
     return L, A
 
 def factLUpivpar(M):
-    # copiamos la matriz como un array de tipo np.float64
-    A = np.array(M, dtype = np.float64)
-    n, _ = A.shape
+    """Obtiene la factorización A=L'U, donde U es una matriz triangular superior. También
+    calcula P tal que l=PL' es una matriz triangular inferior. Se realiza por medio
+    de pivoteo parcial, es decir, el pivote es el elemento de mayor valor absoluto en cada
+    columna que este de la diagonal hacia abajo.
 
+    Args:
+        M(np.ndarray):
+            M representa una matriz cuadrada.
+        
+    returns:
+        L(np.ndarray):
+            matriz.
+        U(np.ndarray):
+            matriz triangular superior de la descomposción LU.
+        P(np.ndarray):
+            matriz de permutación tal que PL es triangular inferior.
+            
+    raises:
+        Genera una expeción si en algún momento la diagonal tiene un elemento igual a cero.
+    
+    """
+    # copiamos la matriz como un array de tipo np.float64.
+    A = np.array(M, dtype = np.float64)
+    # obtenemos el tamaño de la matriz.
+    n, _ = A.shape
+    # incializamos L y P como identidades.
     L = np.identity(n)
     P = np.identity(n)
-
+    # para cada columna hasta la penúltima realizamos el pivoteo.
     for j in range(n-1):
+        # Pj es la matriz de permutación para el acomodar al pivote.
+        # PjInv es la inversa de Pj.
         PjInv = np.identity(n)
+        # Mj es la matriz de eliminación de la columna j.
+        # MjInv es la inversa de Mj.
         MjInv = np.identity(n)
-
+        # Entontramos el pivote por medio del pivoteo parcial
         p = pivoteoParcial(A, j)
-        if p != j:
-            # intercambiamos renglones
+        # si el pivote es cero, no hay más que hacer.
+        if A[p, j] == 0:
+            raise Exception("La matriz es singular.")
+        elif p != j:
+            # intercambiamos renglones.
             A[[j, p]] = A[[p, j]]
+            # la matriz de permutación cambia para reflejar el intercambio.
             PjInv[[j, p]] = PjInv[[p, j]]
-
+        # modificamos los renglones debajo de la digonal.
         for i in range(j+1, n):
-            
+            # obtenemos el factor de eliminación.
             fact = A[i, j] / A[j, j]
+            # Recordemos que la inversa de la matriz de eliminación guarda estos factores.
             MjInv[i, j] = fact
+            # modificamos los renglones para hacer ceros debajo de la diagonal.
             A[i] = A[i] - fact*A[j]
-
+        # una vez calculada la matriz inversa de eliminación, procedemos a aplicarle
+        # la matriz de permutación.
         if p != j:
             MjInv[[j, p]] = MjInv[[p, j]]
-        
+        # realizamos las multipliaciones 
+        # L = P_1^T * M1^-1 * ... * P_{k-1}^T * M_{k-1}^-1
         L = np.dot(L, MjInv)
+        # P = P_{k-1} * ... * P_1
         P = np.dot(PjInv, P)
-        
-
     return L, A, P
     
 def factLUpivtot():
@@ -84,10 +119,4 @@ if __name__ == "__main__":
         [-4,-7,-5,-8],
         [6,8,2,9],
         [4,9,-2,14]]
-
-    L, U, P = factLUpivpar(A)
-
-    print(L)
-    print(U)
-    print(np.dot(L, U))
 
