@@ -1,6 +1,8 @@
 import numpy as np
 from Factorizacion import *
 from Pivoteo import *
+from SistemaLineal import *
+from SolLU import *
 
 class MatrizCuadrada:
     """
@@ -196,14 +198,34 @@ class MatrizCuadrada:
             sumas[i] = sum_rowi
         return max(sumas)
 
+    @staticmethod
+    def normaUnoVect(self):
+        pass
+
+    @staticmethod
+    def normaInfVect(self):
+        pass
+
     def _estimarNormaInv(self):
+        """Estimación de la norma inversa."""
         c = np.choice([-1, 1], size = self.n)
+        # calculamos la transpuesta de A
+        At = MatrizCuadrada(self.A.T)
+        Y = resolverConLU(At, c)
+        Z = resolverConLU(self, Y)
 
     def _normaInv(self):
         pass
 
-    def _cond(self):
-        pass
+    def _cond(self, met = None):
+        if met is None:
+            pass
+        elif met == 'exacto':
+            # si la matriz es singular
+            if self.determinante == 0:
+                return np.inf
+            else:
+                pass
         
     def factorizarLU(self, pivoteo = None):
         """

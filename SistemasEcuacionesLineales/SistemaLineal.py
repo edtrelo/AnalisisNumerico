@@ -2,6 +2,7 @@ from MatricesCuadradas import MatrizCuadrada
 from SustitucionGaussiana import sustGauss
 from Sustitucion import *
 import numpy as np
+from SolLU import *
 
 class SistemaLineal:
 
@@ -37,37 +38,17 @@ class SistemaLineal:
                 Solución al sistema AX = b.
             pivoteo(None o str):
                 """
-        L, U = None, None
-
         if pivoteo is None:
             # obtenemos la factorización L, U estándar
             # recordar que son objetos de la clase MatrizCuadrada
-            L, U = self.Mat.factorizarLU()
+            return resolverConLU(self.Mat, self.vec)
         elif pivoteo == 'parcial':
             pass
         elif pivoteo == 'total':
             pass
         else:
             raise ValueError("El parámetro para el pivoteo no es una opción viable.")
-        # resuelve LY = b
-        Y = sustDelante(L.A, self.vec)
-        # resuelve UX = Y
-        X = sustAtras(U.A,Y)
-        return X
+        
         
 
 
-A = [   [2,4,3,12],
-        [-40,-7,-5,-8],
-        [6,8,2,9],
-        [4,9,-2,14]] 
-
-b = [1,1,1,1]
-
-S = SistemaLineal(A, b)
-
-X = S._byLUstandar()
-print(X)
-
-Y = np.linalg.solve(A, b)
-print(Y)
