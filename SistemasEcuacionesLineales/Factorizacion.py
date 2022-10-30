@@ -1,3 +1,7 @@
+# FACTORIZACIONES DE MATRICES
+# LU (estándar, pivoteo parcial, pivoteo total)
+# Cholesky (A = LL^t)
+
 import numpy as np
 from Pivoteo import *
 
