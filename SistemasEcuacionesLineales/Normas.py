@@ -1,3 +1,6 @@
+# NORMAS DE VECTORES.
+# Norma p y Norma infinito.
+
 import numpy as np
 
 def normaP(v, p = 2):

@@ -1,3 +1,5 @@
+# ALGORITMOS DE PIVOTEO.
+
 import numpy as np
 
 def pivoteoParcial(A, j, i = None):

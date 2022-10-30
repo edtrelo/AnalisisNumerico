@@ -22,7 +22,7 @@ def factLU(M):
     raises:
         Genera una expeción si en algún momento la diagonal tiene un elemento igual a cero."""
     # copiamos la matriz del argumento.
-    A = np.array(M, dtype = np.float64)
+    A = np.copy(M)
     # obtenemos el tamaño de la matriz, que asumimos cuadrada.
     n, _ = A.shape
     # inicializamos L como I_n.
