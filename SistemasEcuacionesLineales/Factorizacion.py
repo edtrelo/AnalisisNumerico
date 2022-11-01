@@ -189,14 +189,107 @@ def factLUpivtot(M):
     # listo!
     return L, U, P, Q
 
-def factCholesky():
-    pass
+def factCholesky(A):
+    """Obtención de la factorización A=LL^t. Suponemos que A es definida positiva y simétrica.
+    
+    Args:
+        A(np.ndarray):
+            Matriz definida positiva y simétrica.
+        
+    Returns:
+        L(np.ndarray):
+            Matriz triangular inferior tal que A=LL^t.
+    """
+    n, _ = A.shape
+    L = np.zeros((n,n))
+    # recorremos columnas
+    for i in range(n):
+        for k in range(n):
+            # dejamos en cero a los elementos arriba de la diagonal.
+            if i > k:
+                pass
+            # solo implemento las fórumlas que Iván nos presentó.
+            # si i = k:
+            # l_{kk} = ( a_{kk} - \sum_{j=0}^{k-1} (l_{kj}^2) )^(1/2)
+            # si i < k:
+            # l_{ki} = (a_{ki}-\sum_{j=0}^{i-1} l_{ij}*l_{kj}) / l_{ii}
+            # recordando que k = 0,1...,n-1 e i = 0,1,...,n-1
+
+            # establecemos los elementos debajo de la diagonal.
+            elif k > i:
+                suma = 0.0
+                for j in range(i):
+                    suma += L[i, j]*L[k, j]
+                L[k, i] = (A[k, i] - suma)/L[i, i]
+            # establecemos los elementos de la diagonal.
+            else:
+                suma = 0.0
+                for j in range(k):
+                    suma+= np.square(L[k, j])
+                L[k, k] = np.sqrt(A[k, k] - suma)
+    return L
+
+def factCholeskyDiag(A):
+    """Obtención de la factorización A=LDL^t. Suponemos que A es definida positiva y simétrica.
+    
+    Args:
+        A(np.ndarray):
+            Matriz definida positiva y simétrica.
+        
+    Returns:
+        L(np.ndarray):
+            Matriz triangular inferior tal que A=LDL^t.
+        D(np.ndarray):
+            Matriz diagonal.
+    """
+    # Dado A = LL^t la factorización de Cholesky, obtenemos una matriz diagonal tal que A = L'DL'^t
+    # donde las entradas de D son los cuadrados de las diagonales de la L original. 
+    # Así podemos descomponer a D como D^(1/2) tal que L=L'D^(1/2). Para obtener esta L', obtenemos la
+    # inversa de D^(1/2) --- que consiste en los recíprocos de D^(1/2) --- y obtener L[D^(1/2)]^(-1).
+    # Este producto nos dara las columnas de L divididas entre la respectiva diagonal de L.
+    
+    # Obtenemos la factorización de Cholesky.
+    Lch = factCholesky(A)
+    n, _ = A.shape
+    # Inicializamos la L'
+    L = np.zeros((n,n))
+    # Incializamos D
+    D = np.zeros((n,n))
+    # llenamos cada entrada de la diagonal de D
+    for i in range(n):
+        # Por como la obtuvimos, las entradas son solo los cuadrados de la L.
+        D[i,i] = np.square(Lch[i, i])
+    # columnas
+    for j in range(n):
+            # renglones
+        for i in range(n):
+            # L' tendrá 1 en su diagonal.
+            if i == j:
+                L[i,i] = 1
+            # la columna j es la misma columna J de L dividida entre la entrada de la diagonal
+            # de dicha columna.
+            elif i > j:
+                L[i,j] = Lch[i, j] / Lch[j, j]
+    return L, D
+
+
+
+
+    
+
+    
+
+    
 
 if __name__ == "__main__":
 
-    A = [[1,2,2],
-        [4,4,2],
-        [4,6,4]]
+    A = [[2,-1,0],
+        [-1,2,-1],
+        [0,-1,2]]
+    A = np.array(A, dtype=np.float64)
+    L, D = factCholeskyDiag(A)
+    print(np.dot(L, np.dot(D, L.T)))
+
 
    
 
