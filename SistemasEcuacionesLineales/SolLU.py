@@ -49,8 +49,25 @@ def resolverConLUParcial(A, b):
     X = sustAtras(U, Y)
     return X
 
-def resolverConLUTotal():
-    pass
+def resolverConLUTotal(A, b):
+    L, U, P, Q = factLUpivtot(A)
+    # tenemos que A=LU -> PAQ = PLUQ, donde PL es triangular inferior y UQ es triangular superior.
+    # Transformamos Ax=b -> PLUx = Pb
+    # hacemos x=Qz -> PLUQz = Pb
+    # ahora, sea y=UQz -> PLy = Pb. 
+    Ltrian = np.dot(P, L)
+    bper = np.dot(P, b)
+    # Como PL es triangular inferior, resolvemos por sust. hacia adelante.
+    Y = sustDelante(Ltrian, bper)
+    # Como UQ es triangular superior, usamos sust. hacia atrás para resolver UQz = y
+    Utrian = np.dot(U, Q)
+    print(Utrian)
+    Z = sustAtras(Utrian, Y)
+    
+    # Finalmente, x es Qz.
+    X = np.dot(Q, Z)
+    return X
+    
 
 A = [[2,4,3,5],
         [-4,-7,-5,-8],
@@ -65,5 +82,6 @@ b = np.array(b)
 X = np.linalg.solve(A, b)
 print(X)
 
-print(resolverConLU(A, b))
-print(resolverConLUParcial(A, b))
+print(resolverConLUTotal(A, b))
+
+

@@ -3,7 +3,7 @@
 # Cholesky (A = LL^t)
 
 # Nota: Para matrices de permutación donde solo dos de sus columnas/renglones cambiaron respecto a la
-# identidad
+# identidad, la inversa, que es su transpuesta, es la misma matriz.
 
 import numpy as np
 from Pivoteo import *
@@ -136,9 +136,10 @@ def factLUpivtot(M):
     n, _ = A.shape
     # Inicializamos P, L, Q donde:
     # P = P_{k-1} * ... * P_1
-    # Q = Q_{n-1}^t * ... * Q_1^t, donde Q_j es la matriz de permutación de la columna.
+    # Q = Q_1 * ... * Q_{n-1}, donde Q_j es la matriz de permutación de la columna.
+    # Qinv = Q_{n-1}^t * ... * Q_1^t
     # L = P_1^t * M_1^-1 * ... * P_{n-1}^t * M_{n-1}^-1, donde M_j es la matriz de eliminación.
-    P, L, Q = np.identity(n), np.identity(n), np.identity(n)
+    P, L, Q, Qinv = np.identity(n), np.identity(n), np.identity(n), np.identity(n)
     # para cada columna hasta la penúltima realizamos el pivoteo.
     for j in range(n-1):
         # PjInv es la inversa de Pj.
@@ -146,7 +147,7 @@ def factLUpivtot(M):
         # MjInv es la inversa de Mj.
         MjInv = np.identity(n)
         # QjInv es la inversa de Qj.
-        QjInv = np.identity(n)
+        Qj = np.identity(n)
         # Entontramos el pivote por medio del pivoteo total.
         p, q = pivoteoTotal(A, j)
         # si el pivote es cero, no hay más que hacer.
@@ -163,7 +164,7 @@ def factLUpivtot(M):
             # intercambiar columnas
             A[:, [q, j]] = A[:, [j, q]]
             # la matriz de permutación cambia para reflejar el cambio.
-            QjInv[:, [q, j]] = QjInv[:, [j, q]]
+            Qj[:, [q, j]] = Qj[:, [j, q]]
         # modificamos los renglones debajo de la digonal.
         for i in range(j+1, n):
             # obtenemos el factor de eliminación.
@@ -182,10 +183,12 @@ def factLUpivtot(M):
         L = np.dot(L, MjInv)
         # P = P_{k-1} * ... * P_1
         P = np.dot(PjInv, P)
-        # Q = Q_{n-1}^t * ... * Q_1^t
-        Q = np.dot(QjInv, Q)
+        # Q = Q_1 * ... * Q_{n-1}
+        Q = np.dot(Q, Qj)
+        # Qinv = Q_{n-1}^t * ... * Q_1^t
+        Qinv = np.dot(Qj, Qinv)
     # finalmente, el algoritmo nos deja con A*Q_1*...Q_{n-1} = LU. Despejamos A para obtener la U adecuada.
-    U = np.dot(A, Q)
+    U = np.dot(A, Qinv)
     # listo!
     return L, U, P, Q
 
@@ -272,23 +275,25 @@ def factCholeskyDiag(A):
                 L[i,j] = Lch[i, j] / Lch[j, j]
     return L, D
 
-
-
-
-    
-
-    
-
-    
-
 if __name__ == "__main__":
 
     A = [[2,-1,0],
         [-1,2,-1],
         [0,-1,2]]
     A = np.array(A, dtype=np.float64)
-    L, D = factCholeskyDiag(A)
-    print(np.dot(L, np.dot(D, L.T)))
+    L, U, P, Q = factLUpivtot(A)
+    #print(np.dot(L, U))
+    #print(np.dot(U, Q))
+
+    A = [[2,4,3,5],
+        [-4,-7,-5,-8],
+        [6,8,2,9],
+        [4,9,-2,14]]
+
+    A = np.array(A, dtype=np.float64)
+    L, U, P, Q = factLUpivtot(A)
+    print(np.dot(L, U))
+    print(np.dot(U, Q))
 
 
    
