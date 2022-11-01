@@ -1,4 +1,3 @@
-import re
 import numpy as np
 from Factorizacion import *
 from Pivoteo import *
@@ -217,9 +216,9 @@ class MatrizCuadrada:
         # calculamos la transpuesta de A
         At = MatrizCuadrada(self.A.T)
         # Resolvemos AtY = c
-        Y = resolverConLU(At, c)
+        Y = resolverConLU(At.A, c)
         # Resolvemos AZ = Y
-        Z = resolverConLU(self, Y)
+        Z = resolverConLU(self.A, Y)
 
         normY = MatrizCuadrada._normaUnoVect(Y)
         normZ = MatrizCuadrada._normaUnoVect(Z)
@@ -242,11 +241,6 @@ class MatrizCuadrada:
                 return np.inf
         else:
             raise Exception("El parámetro para 'metodo' no es válido.")
-
-
-    def condExt(self):
-        Ainv = MatrizCuadrada(np.linalg.inv(self.A))
-        return A.normaUno * Ainv.normaUno
         
     def factorizarLU(self, pivoteo = None):
         """

@@ -47,8 +47,8 @@ def pivoteoTotal(A, j):
         p = pivoteoParcial(A, k, j)
         pivotes[k-j] = p
 
-        mayores = [A[p, j + i] for i, p in enumerate(pivotes)]
-        mayor = max(mayores, key = abs)
-        q = mayores.index(mayor) + j
+    mayores = [A[p, j + i] for i, p in enumerate(pivotes)]
+    mayor = max(mayores, key = abs)
+    q = mayores.index(mayor) + j
 
-        return pivotes[q - j], q
+    return pivotes[q - j], q
