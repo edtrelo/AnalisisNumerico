@@ -61,27 +61,7 @@ def resolverConLUTotal(A, b):
     Y = sustDelante(Ltrian, bper)
     # Como UQ es triangular superior, usamos sust. hacia atrás para resolver UQz = y
     Utrian = np.dot(U, Q)
-    print(Utrian)
     Z = sustAtras(Utrian, Y)
-    
     # Finalmente, x es Qz.
     X = np.dot(Q, Z)
     return X
-    
-
-A = [[2,4,3,5],
-        [-4,-7,-5,-8],
-        [6,8,2,9],
-        [4,9,-2,14]]
-
-b = [1,1,1,1]
-
-A = np.array(A)
-b = np.array(b)
-
-X = np.linalg.solve(A, b)
-print(X)
-
-print(resolverConLUTotal(A, b))
-
-

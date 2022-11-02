@@ -161,7 +161,7 @@ class MatrizCuadrada:
                 sign = (-1)**i
                 # sobre la primer fila hacemos la expanción
                 subM = self.subMatriz(0, i)
-                deter += sign*self.A[0, i] * subM.determinante
+                deter += sign * self.A[0, i] * subM.determinante
             return deter
         
     @property
@@ -208,6 +208,12 @@ class MatrizCuadrada:
     def _normaInfVect(v):
         """Calcula la norma inf del vector v."""
         return normaInf(v)
+
+    @property
+    def T(self):
+        """La transpuesta de la matriz."""
+        trans = self.A.T
+        return MatrizCuadrada(trans)
 
     def _estimarNormaInv(self):
         """Estimación de la norma inversa usando la Norma 1 de vectores."""
@@ -271,17 +277,61 @@ class MatrizCuadrada:
         elif pivoteo == 'parcial':
             L, U, P = factLUpivpar(self.A)
             return MatrizCuadrada(L), MatrizCuadrada(U), MatrizCuadrada(P)
+        elif pivoteo == 'total':
+            L, U, P, Q = factLUpivtot(self.A)
+            return MatrizCuadrada(L), MatrizCuadrada(U), MatrizCuadrada(P), MatrizCuadrada(Q)
+        else:
+            raise Exception("El parámetro para pivote no es aceptable.")
 
+    def factrizarCholesky(self, tipo = None):
+        if self.esCholesky()
+            if tipo is None:
+                L = factCholesky(self.A)
+                return MatrizCuadrada(L)
+            elif tipo == "diagonal":
+                L, D = factCholeskyDiag(self.A)
+                return MatrizCuadrada(L), MatrizCuadrada(D)
+            else:
+                raise Exception("El argumento tipo no es aceptable.")
+        else:
+            raise Exception("La Martriz no acepta factorización de Cholesky.")
+
+    def _defPos(self):
+        """Verifica si la Matriz Cuadrada es definida positiva.
+        
+        Returns:
+            bool"""
+        for i in range(self.size):
+            # obtenemos la submatriz
+            subM = MatrizCuadrada(self.A[:i+1, :i+1])
+            subDet = subM.determinante
+            # si alguna submatriz es no positiva, la matriz
+            # no es definida positiva
+            if subDet <= 0:
+                return False
+        # todas los determinantes son positivos.
+        return True
+
+    def esCholesky(self):
+        """verifica si la Matriz Cuadrada tiene factorización de Cholesky.
+        
+        Returns:
+            bool:
+                True si A es definida postiva y simétrica."""
+        if self.A == self.A.T:
+            if self._defPos():
+                return True
+            else:
+                return False
+        else:
+            return False
 
 if __name__ == "__main__":
 
-    A = [[2,4,3,5],
-        [-4,-7,-5,-8],
-        [6,8,2,9],
-        [4,9,-2,14]]
-
-    print(np.linalg.cond(A, p = 1))
+    A = [[14,2,2],
+        [2,1,-2],
+        [2,-2,10]]
 
     A = MatrizCuadrada(A)
-    
-    print(A.cond)
+
+    print(A._defPos())
