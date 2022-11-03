@@ -1,9 +1,10 @@
 from MatricesCuadradas import MatrizCuadrada
-from SustitucionGaussiana import sustGauss
+from SustitucionGaussiana import *
 from Sustitucion import *
-import SolCholesky
-import SolLU
+from SolCholesky import *
+from SolLU import *
 import numpy as np
+from time import time
 
 class SistemaLineal:
 
@@ -30,7 +31,7 @@ class SistemaLineal:
         else:
             raise ValueError("El argumento de pivoteo no es válido.")
 
-    def porLU(self, pivoteo = None):
+    def porLU(self, pivoteo = None, medir = False):
         """Resuelve el sistema Ax = b por medio de la factorización L,U (sin pivoteo, pivoteo
         parcial o pivoteo total) de la siguiente manera:
         
@@ -43,20 +44,34 @@ class SistemaLineal:
 
             -> 'parcial': para pivoteo parcial.
             -> 'total': para pivoteo total.
+
+        Args:
+            pivoteo(str or None):
+                Tipo de pivoteo.
+            medir(bool):
+                True para regresar el tiempo que tardó el algoritmo.
         
         Returns:
             X(np.ndarray):
-                Solución al sistema AX = b."""
+                Solución al sistema AX = b.
+            (si medir es True):
+                también regresa t(float), tiempo que tardó el algoritmo en segundos."""
+        X = None
+        start = time()
         if pivoteo is None:
             # obtenemos la factorización L, U estándar
             # recordar que son objetos de la clase MatrizCuadrada
-            return resolverConLU(self.Mat.A, self.vec)
+            X = resolverConLU(self.Mat.A, self.vec)
         elif pivoteo == 'parcial':
-            return resolverConLUParcial(self.Mat.A, self.vec)
+            X = resolverConLUParcial(self.Mat.A, self.vec)
         elif pivoteo == 'total':
-            return resolverConLUTotal(self.Mat.A, self.vec)
+            X = resolverConLUTotal(self.Mat.A, self.vec)
         else:
             raise ValueError("El parámetro para el pivoteo no es una opción viable.")
+        t = time() - start
+        if medir:
+            return X, t
+        return X
     
     def porCholesky(self):
         """Resuelve el sistema Ax = b por medio de la factorización LL^t.

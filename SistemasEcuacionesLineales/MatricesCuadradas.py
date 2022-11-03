@@ -1,7 +1,6 @@
 import numpy as np
 from Factorizacion import *
 from Pivoteo import *
-from SistemaLineal import *
 from SolLU import *
 from Normas import *
 
@@ -284,7 +283,7 @@ class MatrizCuadrada:
             raise Exception("El parámetro para pivote no es aceptable.")
 
     def factrizarCholesky(self, tipo = None):
-        if self.esCholesky()
+        if self.esCholesky():
             if tipo is None:
                 L = factCholesky(self.A)
                 return MatrizCuadrada(L)

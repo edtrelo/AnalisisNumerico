@@ -2,7 +2,7 @@ import numpy as np
 from Sustitucion import sustAtras
 from Pivoteo import pivoteoParcial
 
-def elimGauss(M, b = None)
+def elimGauss(M, b = None):
   """Resulve el Sistema de Ecuaciones Mx = b mediante el 
   método de Gauss y la sustitución hacia atrás.
   
