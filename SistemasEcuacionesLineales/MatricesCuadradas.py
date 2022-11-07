@@ -1,8 +1,8 @@
 import numpy as np
 from Factorizacion import *
-from Pivoteo import *
+import Pivoteo as Piv
 from SolLU import *
-from Normas import *
+import Normas
 
 class MatrizCuadrada:
     """
@@ -47,8 +47,17 @@ class MatrizCuadrada:
         return self.A.__str__()
     
     def __mul__(self, other):
-        """Implementa la función A*B para la multipliación de matrices."""
-        if type(other) != MatrizCuadrada:
+        """Implementa la función A*B para la multipliación de matrices o de matriz con vector.
+        
+        Returns:
+            MatrizCuadra:
+                si other es otra MatrizCuadrada
+            np.ndarray:
+                si other es un array."""
+        # multiplicación con vectores.
+        if type(other) == np.ndarray:
+            return np.dot(self.A, other)
+        elif type(other) != MatrizCuadrada:
             raise Exception("Los objetos de MatrizCuadrada solo pueden multiplicarse entre ellos.")
         return MatrizCuadrada(np.dot(self.A, other.A))
 
@@ -104,7 +113,7 @@ class MatrizCuadrada:
             p(int):
                 renglón que tiene al elemento de mayor valor absoluto en la columna j
                 a partir del renglón i."""
-        return pivoteoParcial(self.A, j, i)
+        return Piv.pivoteoParcial(self.A, j, i)
 
     def obtenerPivoteTotal(self, j):
         """Obtiene la fila p y la columna q tal que A'[p,q] es el elemento mayor en 
@@ -120,7 +129,7 @@ class MatrizCuadrada:
                 fila donde está el pivote.
             q(int):
                 columna donde está el pivote."""
-        pivoteoTotal(self.A, j)
+        return Piv.pivoteoTotal(self.A, j)
 
     def subMatriz(self, i, j):
         """Crea un objeto MatrizCuadrada con la sub matriz obtenida al eliminar
@@ -201,12 +210,12 @@ class MatrizCuadrada:
     @staticmethod
     def _normaUnoVect(v):
         """Calcula la norma 1 del vector v."""
-        return normaP(v, p = 1)
+        return Normas.normaP(v, p = 1)
 
     @staticmethod
     def _normaInfVect(v):
         """Calcula la norma inf del vector v."""
-        return normaInf(v)
+        return Normas.normaInf(v)
 
     @property
     def T(self):
@@ -228,12 +237,13 @@ class MatrizCuadrada:
         normY = MatrizCuadrada._normaUnoVect(Y)
         normZ = MatrizCuadrada._normaUnoVect(Z)
 
-        return normZ / normY
+        return normZ/normY
 
     @property
     def cond(self, metodo = None):
         """La condición de la matriz A. Si metodo es None, se regresa una estimación.
-        Si method es 'exacto', se calcula la inversa de A y su norma."""
+        Si method es 'exacto', se calcula la inversa de A y su norma. La norma que
+        se usa es la norma 1."""
         if metodo is None:
             return self.normaUno * self._estimarNormaInv()
         elif metodo == 'exacto':
@@ -282,7 +292,17 @@ class MatrizCuadrada:
         else:
             raise Exception("El parámetro para pivote no es aceptable.")
 
-    def factrizarCholesky(self, tipo = None):
+    def factorizarCholesky(self, tipo = None):
+        """Obtiene la factorización de Cholesky, es decir L, tal que A=LL^t, donde L es una matriz
+        triangular inferior.
+        
+        Returns:
+            L(MatrizCuadrada):
+                L tal que L*L^t = A
+            si tipo == 'diagonal':
+                L(MatrizCuadrada), 
+                D(MatrizCuadrada),
+                tales que LDL^t = A, L es triangular inferior y D es diagonal."""
         if self.esCholesky():
             if tipo is None:
                 L = factCholesky(self.A)
@@ -317,20 +337,10 @@ class MatrizCuadrada:
         Returns:
             bool:
                 True si A es definida postiva y simétrica."""
-        if self.A == self.A.T:
+        if np.array_equal(self.A, self.T.A):
             if self._defPos():
                 return True
             else:
                 return False
         else:
             return False
-
-if __name__ == "__main__":
-
-    A = [[14,2,2],
-        [2,1,-2],
-        [2,-2,10]]
-
-    A = MatrizCuadrada(A)
-
-    print(A._defPos())

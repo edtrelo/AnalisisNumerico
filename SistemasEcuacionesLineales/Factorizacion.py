@@ -192,17 +192,18 @@ def factLUpivtot(M):
     # listo!
     return L, U, P, Q
 
-def factCholesky(A):
-    """Obtención de la factorización A=LL^t. Suponemos que A es definida positiva y simétrica.
+def factCholesky(M):
+    """Obtención de la factorización M=LL^t. Suponemos que M es definida positiva y simétrica.
     
     Args:
-        A(np.ndarray):
+        M(np.ndarray):
             Matriz definida positiva y simétrica.
         
     Returns:
         L(np.ndarray):
             Matriz triangular inferior tal que A=LL^t.
     """
+    A = np.array(M, dtype = np.float64)
     n, _ = A.shape
     L = np.zeros((n,n))
     # recorremos columnas
@@ -275,28 +276,5 @@ def factCholeskyDiag(A):
                 L[i,j] = Lch[i, j] / Lch[j, j]
     return L, D
 
-if __name__ == "__main__":
-
-    A = [[2,-1,0],
-        [-1,2,-1],
-        [0,-1,2]]
-    A = np.array(A, dtype=np.float64)
-    L, U, P, Q = factLUpivtot(A)
-    #print(np.dot(L, U))
-    #print(np.dot(U, Q))
-
-    A = [[2,4,3,5],
-        [-4,-7,-5,-8],
-        [6,8,2,9],
-        [4,9,-2,14]]
-
-    A = np.array(A, dtype=np.float64)
-    L, U, P, Q = factLUpivtot(A)
-    print(np.dot(L, U))
-    print(np.dot(U, Q))
-
-
-   
-
-
-    
+def _crearArray(A):
+    """"""

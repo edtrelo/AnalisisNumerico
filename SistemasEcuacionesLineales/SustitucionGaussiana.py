@@ -52,7 +52,12 @@ def elimGauss(M, b = None):
     # cero entonces no tenemos solución.
     raise Exception("No existe Solución Única.")
   # creamos el vector solución
-  X = sustAtras(A, b)
+  # creamos el vector solución
+  # Nuestra matriz original (con las operaciones elementales aplicadas)
+  # se encuentra eliminando la última columna de A.
+  # Nuestro vector original (con las operaciones elementales aplicadas) 
+  # se encuentra en la última columna de A.
+  X = sustAtras(A[:, :n], A[:, n])
 
   return X
 
@@ -87,7 +92,6 @@ def elimGaussPar(M, b = None):
   if b is not None:
     # ahora A es de nx(n+1)
     A = _crearMatrizAumentada(A, b)
-
   for i in range(0, n-1):
     # Recorremos las primeras n-1 columnas, pues queremos
     # pivotear de forma que la última fila tenga n-1
@@ -112,7 +116,11 @@ def elimGaussPar(M, b = None):
     # cero entonces no tenemos solución.
     raise Exception("No existe Solución Única.")
   # creamos el vector solución
-  X = sustAtras(A, b)
+  # Nuestra matriz original (con las operaciones elementales aplicadas)
+  # se encuentra eliminando la última columna de A.
+  # Nuestro vector original (con las operaciones elementales aplicadas) 
+  # se encuentra en la última columna de A.
+  X = sustAtras(A[:, :n], A[:, n])
 
   return X
 

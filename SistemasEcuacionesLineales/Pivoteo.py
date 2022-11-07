@@ -19,7 +19,7 @@ def pivoteoParcial(A, j, i = None):
             a partir del renglón i."""
     # si i es None, por default buscamos debajo de la diagonal.
     if i is None:
-        i = j + 1
+        i = j 
     # obtenemos el elemento mayor en valor absoluto de la columna
     mayor = max(A[i:, j], key = abs)
     # obtenemos el índice del máximo.

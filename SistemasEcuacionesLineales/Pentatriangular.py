@@ -22,12 +22,12 @@ def solvePentaTrian(A, B, C, Y):
         X(np.ndarray):
             Solución al sistema."""
     # obtenemos la 'matriz' triangularizada.
-    a, b, c, y = eliminacionPentaTrian(A, B, C, Y)
+    a, b, c, y = _eliminacionPentaTrian(A, B, C, Y)
     # aplicamos la sustitución hacia atrás.
-    X = sustPentaTrian(b, c, y)
+    X = _sustPentaTrian(b, c, y)
     return X
 
-def eliminacionPentaTrian(A, B, C, Y):
+def _eliminacionPentaTrian(A, B, C, Y):
     """Imita la eliminación gaussiana para la matriz aumentada M|Y donde la diagonal
     principal de M es B, la diagonal inferior es A y la diagonal superior es C. Además
     las entradas debajo de A y encima de C son todos 1.
@@ -78,7 +78,7 @@ def eliminacionPentaTrian(A, B, C, Y):
     # terminamos!
     return a,b,c,y
 
-def sustPentaTrian(b, c, y):
+def _sustPentaTrian(b, c, y):
     """Realiza sustitución hacia atrás de un sistema Ux=y, donde U es una 
     matriz pentatriangular llevada a su forma triangular superior trás un
     proceso de eliminación gaussiana, además y pasó por el mismo proceso."""
@@ -98,47 +98,3 @@ def sustPentaTrian(b, c, y):
             X[i] = (y[i] - c[i]*X[i+1] - X[i+2]) / b[i]
     return X
         
-
-b = np.full(100, 6, dtype = np.float64)
-b[0] = 9
-b[98] = 5
-b[99] = 1
-
-
-
-c = np.full(99, -4,  dtype = np.float64)
-c[98] = -2
-
-a = np.copy(c)
-Y = np.full(100, 1,  dtype = np.float64)
-
-A = np.zeros((100,100))
-for i in range(100):
-    A[i,i] = b[i]
-
-for i in range(99):
-    A[i, i+1] = c[i]
-    A[i+1, i] = a[i]
-
-for i in range(98):
-    A[i, i+2] = 1
-    A[i+2, i] = 1
-
-print(A)
-        
-from SolLU import *
-Z = solvePentaTrian(a,b,c,Y)
-X = resolverConLU(A, Y)
-
-
-
-
-
-
-#print('X:', X)
-
-from Factorizacion import factLU
-
-print(Z)
-print(X)
-

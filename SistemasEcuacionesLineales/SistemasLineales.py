@@ -9,7 +9,10 @@ from time import time
 class SistemaLineal:
 
     def __init__(self, A, b):
-        self.Mat = MatrizCuadrada(A)
+        if type(A) == MatrizCuadrada:
+            self.Mat = A
+        else:
+            self.Mat = MatrizCuadrada(A)
         if self.Mat.size != len(b):
             raise Exception("El sistema lineal no puede crearse. Los tamaños no coinciden.")
         self.vec = np.array(b, dtype = np.float64)
