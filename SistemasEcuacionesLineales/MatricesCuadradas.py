@@ -174,14 +174,26 @@ class MatrizCuadrada:
         
     @property
     def determinante(self):
+        """El determinante de la matriz.
+        
+        Returns:
+            float"""
         return self._determinante()
 
     @property
     def size(self):
+        """Número de columnas y de filas.
+        
+        Returns:
+            int"""
         return self.n
 
     @property
     def normaUno(self):
+        """Calcula la norma 1 de la matriz.
+
+        Returns:
+            float"""
         # sobre columnas
         # aquí guardaremos las sumas de las columnas.
         sumas = np.zeros(self.n)
@@ -198,6 +210,10 @@ class MatrizCuadrada:
 
     @property
     def normaInf(self):
+        """Calcula la norma infinito de la matriz.
+        
+        Returns:
+            float"""
         # sobre filas
         sumas = np.zeros(self.n)
         for i in range(self.n):
@@ -209,22 +225,34 @@ class MatrizCuadrada:
 
     @staticmethod
     def _normaUnoVect(v):
-        """Calcula la norma 1 del vector v."""
+        """Calcula la norma 1 del vector v.
+        
+        Returns:
+            float"""
         return Normas.normaP(v, p = 1)
 
     @staticmethod
     def _normaInfVect(v):
-        """Calcula la norma inf del vector v."""
+        """Calcula la norma inf del vector v.
+        
+        Returns:
+            float"""
         return Normas.normaInf(v)
 
     @property
     def T(self):
-        """La transpuesta de la matriz."""
+        """La transpuesta de la matriz.
+        
+        Returns:
+            At(MatrizCuadrada)"""
         trans = self.A.T
         return MatrizCuadrada(trans)
 
     def _estimarNormaInv(self):
-        """Estimación de la norma inversa usando la Norma 1 de vectores."""
+        """Estimación de la norma inversa usando la Norma 1 de vectores.
+        
+        Returns:
+            cond A^-1 (float)"""
         c = np.random.choice([1, -1], size = self.n)
 
         # calculamos la transpuesta de A
@@ -243,7 +271,10 @@ class MatrizCuadrada:
     def cond(self, metodo = None):
         """La condición de la matriz A. Si metodo es None, se regresa una estimación.
         Si method es 'exacto', se calcula la inversa de A y su norma. La norma que
-        se usa es la norma 1."""
+        se usa es la norma 1.
+        
+        Returns:
+            cond(float)"""
         if metodo is None:
             return self.normaUno * self._estimarNormaInv()
         elif metodo == 'exacto':
@@ -255,7 +286,7 @@ class MatrizCuadrada:
                 # si la matriz es singular, regresamos infinito como condición.
                 return np.inf
         else:
-            raise Exception("El parámetro para 'metodo' no es válido.")
+            raise ValueError("El parámetro para 'metodo' no es válido.")
         
     def factorizarLU(self, pivoteo = None):
         """
@@ -302,7 +333,13 @@ class MatrizCuadrada:
             si tipo == 'diagonal':
                 L(MatrizCuadrada), 
                 D(MatrizCuadrada),
-                tales que LDL^t = A, L es triangular inferior y D es diagonal."""
+                tales que LDL^t = A, L es triangular inferior y D es diagonal.
+                
+        Raises:
+            ValueError:
+                Si la matriz no tiene factorización de cholesky o si el parámetro de tipo no es None
+                o 'diagonal'.
+                """
         if self.esCholesky():
             if tipo is None:
                 L = factCholesky(self.A)
@@ -311,12 +348,13 @@ class MatrizCuadrada:
                 L, D = factCholeskyDiag(self.A)
                 return MatrizCuadrada(L), MatrizCuadrada(D)
             else:
-                raise Exception("El argumento tipo no es aceptable.")
+                raise ValueError("El argumento tipo no es aceptable.")
         else:
-            raise Exception("La Martriz no acepta factorización de Cholesky.")
+            raise ValueError("La Martriz no acepta factorización de Cholesky.")
 
     def _defPos(self):
-        """Verifica si la Matriz Cuadrada es definida positiva.
+        """Verifica si la Matriz Cuadrada es definida positiva mediante el criterio
+        de los determinantes.
         
         Returns:
             bool"""

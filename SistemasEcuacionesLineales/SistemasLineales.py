@@ -7,8 +7,22 @@ import numpy as np
 from time import time
 
 class SistemaLineal:
-
+    """Modelo de representación del sistema Lineal de ecuaciones Ax = b, donde 
+    A es un matriz cuadrada de nxn, b es un vector de nx1 y x es la solución al sistem.
+    
+    Contiene los siguientes métodos de solución al sistema: por eliminación gaussiana(con y
+    sin pivoteo parcial), por factorización LU (estándar, con pivoteo parcial o total) y por
+    factorización de Cholesky.
+    
+    
+    La matriz se guarda como un objeto tipo MatrizCuadrada, que es una clase que alberga diferentes
+    métodos útiles para la implementación de los métodos ya mencionados."""
     def __init__(self, A, b):
+        """Args:
+            A(MatrizCuadrada o np.ndarray):
+                A representa la matriz del sistema.
+            b(np.ndarray)
+        """
         if type(A) == MatrizCuadrada:
             self.Mat = A
         else:
@@ -81,11 +95,14 @@ class SistemaLineal:
         
         Returns:
             X(np.ndarray):
-                Solución al sistema AX = b."""
-        
+                Solución al sistema AX = b.
+                
+        Raises:
+            ValueError:
+                Si la matriz no tiene factorización de cholesky."""
         if self.Mat.esCholesky():
             return resolverConCholesky(self.Mat.A, self.vec)
         else:
-            raise Exception("La Matriz A no tiene factorización de Cholesky.")
+            raise ValueError("La Matriz A no tiene factorización de Cholesky.")
 
         
