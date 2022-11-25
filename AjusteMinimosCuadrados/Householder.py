@@ -1,40 +1,5 @@
 import numpy as np
-
-def sustAtras(A, v):
-  """Dada una matriz A triangular superior y v un vector, se resuelve el sistema Ax = v
-  por medio de la sustitución hacia delante.
-  
-  Args:
-    A(np.ndarray):
-      Matriz triangular superior.
-
-    v(np.ndarray):
-      vector
-    
-  Returns:
-    X(np.ndarray):
-      vector solución del sistema de ecuaciones.
-      
-  Raises:
-    Genera una excepción si en la diagonal de A hay un cero, i.e., A es singular."""
-
-  U, b = np.copy(A), np.copy(v)
-  n, _ = U.shape
-  # creamos el vector solución
-  X = np.zeros(n)
-  for j in range(n-1, -1, -1): # vamos de atrás para delante. 
-    # Recoradar que el segundo argumento de range es no inclusivo.
-
-    # si la matriz tiene una entrada cero en la diagonal, 
-    # entonces no es invertible y el sistema no tiene solución única.
-    if U[j, j] == 0:
-      raise Exception("La matriz es singular. El sistema no tiene solución")
-    # efectuamos la división
-    X[j] = b[j] / U[j, j]
-    for i in range(0, j):
-      # actualizamos los valores de b, sabiendo ya el valor de xj en la ecuación.
-      b[i] =  b[i] - U[i, j] * X[j]
-  return X
+from Sustitucion import sustAtras
 
 def primerValorDistinto(a, valor):
     """Obtiene el índice del primer elemento distinto a valor buscando en el 
@@ -88,7 +53,6 @@ def byHouseholder(Matriz, Vector):
         except:
             # si alguna columna es cero, la saltamos.
             continue
-            print(':)')
         a = np.zeros(m)
         a[k:] = A[k:, j]
         # construimos v
@@ -99,6 +63,7 @@ def byHouseholder(Matriz, Vector):
             A[:, i] = Ha
         # apilciamos H a b
         b = HousholderTransf(b, v)
+    print(b)
     # para esta instancia habremos aplicados n matrices de Householder al sistema,
     # transformandolo de la siguiente manera: Ax=b -> Q^tAx=Qb -> R = Q^tb
     # Ahora basta resolver R = Q^tb por sustitución hacia atrás.
@@ -110,19 +75,18 @@ def byHouseholder(Matriz, Vector):
     X = sustAtras(R, b)
     return X
 
-a = np.array([0,0,1,0.0332, 0.7231, 0.6899])
+if __name__ == '__main__':
+    a = np.array([0,0,1,0.0332, 0.7231, 0.6899])
 
+    A = [[1,1],
+    [-1,0],
+    [0,1],
+    [1,0]]
 
-A = [[1,0,0],
-    [0,1,0],
-    [0,0,1],
-    [-1,1,0],
-    [-1,0,1],
-    [0,-1,1]]
+    A = np.array(A, dtype = np.float64)
 
-A = np.array(A, dtype = np.float64)
+    b = np.array([-1, 2, -1, 1])
 
-b = np.array([1237, 1941, 2417, 711, 1177, 475])
-
-X = byHouseholder(A, b)
-print(X)
+    X = byHouseholder(A, b)
+    print(X)
+    print(2/np.sqrt(3))
