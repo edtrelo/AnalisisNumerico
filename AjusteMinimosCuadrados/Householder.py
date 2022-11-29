@@ -1,5 +1,5 @@
 import numpy as np
-from Sustitucion import sustAtras
+from Sust import sustAtras
 
 def primerValorDistinto(a, valor):
     """Obtiene el índice del primer elemento distinto a valor buscando en el 
@@ -10,7 +10,7 @@ def primerValorDistinto(a, valor):
             return i 
     raise ValueError("Todos los elementos del arreglo a partir del son {}.".format(valor))
 
-def HousholderTransf(a, v):
+def HouseholderTransf(a, v):
     """Obtiene Ha:"""
     # Ha = a - 2v (v^t a / v^t v)
     # obtenemos la norma al cuadrado de v, que es v^t * v
@@ -63,7 +63,6 @@ def byHouseholder(Matriz, Vector):
             A[:, i] = Ha
         # apilciamos H a b
         b = HousholderTransf(b, v)
-    print(b)
     # para esta instancia habremos aplicados n matrices de Householder al sistema,
     # transformandolo de la siguiente manera: Ax=b -> Q^tAx=Qb -> R = Q^tb
     # Ahora basta resolver R = Q^tb por sustitución hacia atrás.
@@ -74,19 +73,40 @@ def byHouseholder(Matriz, Vector):
     # resolvemos por sustitución hacia atrás.
     X = sustAtras(R, b)
     return X
+    
+def HouseholderM(v):
+    """Obtiene H:"""
+    # H = I - 2(vv^t) / (v^t v)
+    # obtenemos la norma al cuadrado de v, que es v^t * v
+    n = len(v)
+    # tenemos que cambiar la forma de v para que sean matrices de nx1 y 1xn
+    respahed = np.reshape(v, (n, 1))
+    vtv = np.dot(v.T, v)
+    # obtenemos el producto v^t * a
+    vvt = np.dot(respahed, respahed.T)
+    H = np.eye(n) - (2/vtv)*vvt
+    return H
 
-if __name__ == '__main__':
-    a = np.array([0,0,1,0.0332, 0.7231, 0.6899])
+def factHouseholder(Matriz):
+    """Obtiene la factorización A = QR donde Q es ortogonal y R triangular."""
+    # creamos copias de los argumentos
+    A = np.array(Matriz, dtype = np.float64)
+    # obtenemos la forma de la matriz
+    m, n = A.shape
+    # queremos que hayan más ecuaciones que variables.
+    if m < n:
+        raise ValueError("La matriz no tiene la forma adecuada.")
+    Q = np.eye(m)
+    for j in range(n):
+        col = A[j:, j]
+        a = np.zeros(m)
+        a[j:] = A[j:, j]
+        # construimos v
+        v = construirV(a, j)
+        # aplicamos H a A
+        H = HouseholderM(v)
+        # vamos calculando Q como producto de inversas eh !
+        Q = np.dot(Q, H)
+        A = np.dot(H, A)
 
-    A = [[1,1],
-    [-1,0],
-    [0,1],
-    [1,0]]
-
-    A = np.array(A, dtype = np.float64)
-
-    b = np.array([-1, 2, -1, 1])
-
-    X = byHouseholder(A, b)
-    print(X)
-    print(2/np.sqrt(3))
+    return Q, A

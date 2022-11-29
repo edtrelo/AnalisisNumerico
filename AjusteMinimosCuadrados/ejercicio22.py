@@ -1,5 +1,5 @@
-# ejercicio 22
-
+# Ejercicio 22
+# Autor: Edgar Armando Trejo López
 import numpy as np
 
 def cond(A):
@@ -46,7 +46,9 @@ b_aprox = np.dot(A, X)
 # recordemos que x * y = cos 0 |x| |y| donde 0 es el ángulo que forma x y y.
 # -> cos 0  = (x*y)/(|x||y|) -> 1/cos 0 = (|x||y|)/(x*y)
 b = np.array([-1, 2, -1, 1])
+# producto punto b*b_i
 dot_product = np.dot(b, b_aprox)
+#obtenemos las respectivas normas
 norma_b = np.sqrt(np.dot(b, b))
 norma_b_approx = np.sqrt(np.dot(b_aprox, b_aprox))
 # calculamos 1/cos 0

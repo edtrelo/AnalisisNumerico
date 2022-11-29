@@ -32,6 +32,36 @@ for i in range(m):
 # entonces x será [x1, x2, ..., xn]
 # --------------- SOLUCIÓN POR NORMALES --------------------------
 Xnorm = byNormales(M, yper)
+print(Xnorm)
+# -------------------- SOLUCIÓN POR QR ---------------------------
+# --------------- SOLUCIÓN POR HOUSEHOLDER -----------------------
+Xhouse = byHouseholder(M, yper)
+print(Xhouse)
 
-plt.plot(t, yper, marker = 'o', linestyle = 'none')
-plt.show()
+# inciso a) ---------------------------------------------------------------------------------
+# ¿Para cuál de los métdos la solución es más sensible a la perturbación generada?
+# Entre más pequeño sea el coseno del ángulo (más cercano el ángulo a pi/2) más
+# sensible será la solución. Por la interpretación geométrica de los mínimos cuadrados
+# cos(0) = |Ax|/|b| = |b_aprox|/|b|
+
+cos_norm = np.linalg.norm(np.dot(M, Xnorm)) / np.linalg.norm(yper)
+cos_house = np.linalg.norm(np.dot(M, Xhouse)) / np.linalg.norm(yper)
+
+if cos_house < cos_norm:
+    print('La solución del método de Householder es más sensible.')
+else:
+    print('La solución de las Ecuaciones Normales es más sensible.')
+
+# inciso b) ----------------------------------------------------------------------------------
+# ¿Cuál de los métodos está más próximo a tener la solución exacta dada por xi = 1?.
+
+dist_norm = np.linalg.norm(coeficientes - Xnorm)
+dist_house = np.linalg.norm(coeficientes - Xhouse)
+
+if dist_norm < dist_house:
+    print('Las Ecuaciones Normales da una solución más cercana a la real.')
+else:
+    print('El método de Householder da una solución más cercana a la real.')
+
+# inciso c) -----------------------------------------------------------------------------------
+# ¿La diferencia en las soluciones afecta en el ajuste de puntos (ti, yi) por el polinomio, por qué?.
