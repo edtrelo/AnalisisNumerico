@@ -1,7 +1,7 @@
 # ejercicio 04
 # por: edgar armando trejo lópez
 import numpy as np
-from MetodosEcNL import biseccion
+from ejercicio01 import biseccion
 # definimos la función
 f = lambda x: x**2 - 3
 # resolvemos sabiendo que la raíz está entre cero y 3

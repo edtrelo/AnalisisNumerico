@@ -1,7 +1,7 @@
 # ejercicio 11
 # por: edgar armando trejo lópez
 import numpy as np
-from MetodosEcNL import secante
+from ejercicio01 import secante
 # definimos la tolerancia para estos ejercicios
 tol = 1/10**5
 print('Soluciones por el Método de la Secante:\n')

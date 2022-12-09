@@ -1,7 +1,7 @@
 # ejercicio 02
 # por: edgar armando trejo lópez
 import numpy as np
-from MetodosEcNL import biseccion
+from ejercicio01 import biseccion
 # Usar el Método de Bisección (programado) para encontrar la solución de las siguientes funciones
 # con una tolerancia de 10^-5
 tol = 1/10**5

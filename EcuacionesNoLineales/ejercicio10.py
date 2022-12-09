@@ -1,7 +1,7 @@
 # ejercicio 10
 # por: edgar armando trejo lópez
 import numpy as np
-from MetodosEcNL import newton
+from ejercicio01 import newton
 # definimos la tolerancia para estos ejercicios
 tol = 1/10**5
 print('Soluciones por el Método de Newton:\n')
